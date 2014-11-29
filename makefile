@@ -1,5 +1,5 @@
 pres:
-	env/bin/ipython3 nbconvert cryptographie_visuelle.ipynb --to slides --template output_toggle 
+	env/bin/ipython3 nbconvert presentation.ipynb --to slides --template output_toggle 
 
 test:
 	env/bin/nosetests
@@ -8,7 +8,7 @@ ipython:
 	env/bin/ipython3 notebook
 
 serve: reveal.js
-	echo "browse to http://localhost:2000/cryptographie_visuelle.slides.html"
+	echo "browse to http://localhost:2000/presentation.slides.html"
 	env/bin/python -m http.server 2000
 
 env: reveal.js

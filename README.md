@@ -22,7 +22,7 @@ itself is rendered using [reveal.js](http://lab.hakim.se/reveal-js/).
 #### stating the presentation
 
 `make serve` should work!  Then you will need to browse to
-http://localhost:2000/cryptographie_visuelle.slides.html to see the presentation
+http://localhost:2000/presentation.slides.html to see the presentation
 in a web browser.
 
 #### hacking the presentation
