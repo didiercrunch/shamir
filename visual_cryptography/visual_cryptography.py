@@ -114,11 +114,9 @@ def cmyk_to_black_and_white(r, g, b, a):
 def produce_image_layer_from_real_image(image_path):
     im = Image.open(image_path).convert('RGBA')
     ret = ImageLayer(*im.size)
-    d = {}
     for i in range(im.size[0]):
         for j in range(im.size[1]):
             r, g, b, a = im.im.getpixel((i,j))
-            d[(r, g, b, a)] = cmyk_to_black_and_white(r, g, b, a)
             ret.data[j][i] = cmyk_to_black_and_white(r, g, b, a)
     return ret
 
