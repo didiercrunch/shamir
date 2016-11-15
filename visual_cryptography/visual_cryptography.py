@@ -22,8 +22,8 @@ class ImageLayer(object):
         [[0,1,1,0], [1,0,0,1]],
         [[1,0,0,1], [0,1,1,0]],
     )
-    
-    pixel_width = 2 
+
+    pixel_width = 2
 
     def __init__(self, height, width):
         self.data = self.get_empty_data(height, width)
@@ -41,10 +41,10 @@ class ImageLayer(object):
         sub_pixel_matrix = self.c_0[0]
         number_of_share_to_produce = len(sub_pixel_matrix)
         number_of_sub_pixels = len(sub_pixel_matrix[0])
-        
+
         current_width = len(self.data[0])
         current_height = len(self.data)
-        
+
         ret = [self.get_empty_data(current_height * self.pixel_width, current_width * self.pixel_width) for i in range(len(sub_pixel_matrix))]
         return ret
 
@@ -93,29 +93,35 @@ class ImageLayer(object):
         return cheated_share
 
 
-def cmyk_to_luminance(r, g, b):
+def cmyk_to_luminance(r, g, b, a):
     """
     takes a RGB color and returns it grayscale value.  See
-    http://www.johndcook.com/blog/2009/08/24/algorithms-convert-color-grayscale/ 
+    http://www.johndcook.com/blog/2009/08/24/algorithms-convert-color-grayscale/
     for more information
     """
-    return 0.299 * r + 0.587 * g + 0.114 * b
+    if (r, g, b) == (0, 0, 0):
+        return a
+    return (0.299 * r + 0.587 * g + 0.114 * b) * a / 255
 
 
-def cmyk_to_black_and_white(r, g, b):
-    black_threshold = 255 / 3
-    if cmyk_to_luminance(r, g, b) > black_threshold:
+def cmyk_to_black_and_white(r, g, b, a):
+    black_threshold = 255 / 2
+    if cmyk_to_luminance(r, g, b, a) < black_threshold:
         return 0
     return 1
 
 
 def produce_image_layer_from_real_image(image_path):
-    im = Image.open(image_path).convert('RGB')
+    im = Image.open(image_path).convert('RGBA')
     ret = ImageLayer(*im.size)
+    d = {}
     for i in range(im.size[0]):
         for j in range(im.size[1]):
-            r, g, b = im.im.getpixel((i,j))
-            ret.data[j][i] = cmyk_to_black_and_white(r, g, b)
+            r, g, b, a = im.im.getpixel((i,j))
+            d[(r, g, b, a)] = cmyk_to_black_and_white(r, g, b, a)
+            ret.data[j][i] = cmyk_to_black_and_white(r, g, b, a)
     return ret
-    
-    
+
+
+if __name__ == '__main__':
+    print(produce_image_layer_from_real_image('dog-512.png'))
